@@ -36,11 +36,11 @@ int _itoa(int value,char *ptr)
      }
 
 
-int main(void)
+char ** findpath(int *len)
 {
 	int fd, ppid, size, j = 0, i;
 	char str[20] = "/proc/", path[10240], aux[5];
-	char *res[20];
+	char **res = malloc(sizeof(char *) * 20);
 	char *word;
 
 	ppid = /*1546*/ getppid();
@@ -68,21 +68,22 @@ int main(void)
 	{
 		printf("%s\n",res[i]);
 	}
+	*len = j;
 
-	return 0;
+	return res;
 }
 
-/*int main(void)
+int main(void)
 {
 	int i, j = 0;
 	char **a;
 
 	a = findpath(&j);
+	printf("De aca pa abajo es main\n");
 	for (i = 0; i < j ; i++)
         {
                printf("%s\n",a[i]);
         }
-	printf("%s\n",a[0]);
 
 	return (0);
-}*/
+}
