@@ -1,10 +1,12 @@
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+/*Function return size of string and convert signed  *
+ *integer to ascii value and store them in array of  *
+ *character with NULL at the end of the array        */
 
 int _itoa(int value,char *ptr)
      {
@@ -33,11 +35,12 @@ int _itoa(int value,char *ptr)
         return count;
      }
 
-char **findpath(void)
+
+int main(void)
 {
 	int fd, ppid, size, j = 0, i;
 	char str[20] = "/proc/", path[10240], aux[5];
-	char **res;
+	char *res[20];
 	char *word;
 
 	ppid = /*1546*/ getppid();
@@ -48,13 +51,12 @@ char **findpath(void)
 	if (fd == -1)
 	{
 		printf("Fallo FD");
-		return;
+		return ;
 	}
 	size = read(fd, path, 10240);
 	while (size != 0)
 		size = read(fd, path, 1024);
 	/*printf("%s\n", path);*/
-	*res = malloc(sizeof(char *) * 20);
 	word = strtok(path, ":="); 
         while (word)
         {
@@ -62,43 +64,25 @@ char **findpath(void)
                 word = strtok(NULL, ":=");
                 j++;
         }
-	return (res);
-}
-
-
-
-
-/**
- * main - stat example
- *
- * Return: Always 0.
- */
-
-int main(int ac, char *av[])
-{
-	int i, j;
-	char *paths[4] = {"/usr/bin", "/usr", "/bin", NULL};
-	struct stat st;
-	char p[1024];
-	char **test = malloc(sizeof(char **) * 20);
-
-	if (ac < 2)
-		return (-1);
-	//paths[] = separate_paths();
-	*test = malloc(sizeof(char *) * 20);
-	test = findpath();
-	for (j = 1; j < (ac - 1); j++)
+	for (i = 0; i < j ; i++)
 	{
-		for (i = 0; test[i]; i++)
-		{
-			strcpy(p, test[i]);
-			strcat(p, "/");
-			strcat(p, av[j]);
-			if (stat(p, &st) == 0)
-			{
-				printf("%s\n", p);
-			}
-		}
+		printf("%s\n",res[i]);
 	}
-	return (0);
+
+	return 0;
 }
+
+/*int main(void)
+{
+	int i, j = 0;
+	char **a;
+
+	a = findpath(&j);
+	for (i = 0; i < j ; i++)
+        {
+               printf("%s\n",a[i]);
+        }
+	printf("%s\n",a[0]);
+
+	return (0);
+}*/
