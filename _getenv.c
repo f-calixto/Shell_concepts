@@ -21,7 +21,7 @@ char *_getenv(const char *name)
 	return NULL;
 }
 
-int main(int ac, char **argv)
+/*int main(int ac, char **argv)
 {
 	char *res;
 	if (ac != 2)
@@ -33,4 +33,4 @@ int main(int ac, char **argv)
 	else
 		printf("No se encontro nada wachin\n");
 	return (0);
-}
+}*/
