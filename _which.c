@@ -33,7 +33,7 @@ int _itoa(int value,char *ptr)
         return count;
      }
 
-char **findpath(void)
+char **findpath(int *len)
 {
 	int fd, ppid, size, j = 0, i;
 	char str[20] = "/proc/", path[10240], aux[5];
@@ -54,7 +54,7 @@ char **findpath(void)
 	while (size != 0)
 		size = read(fd, path, 1024);
 	/*printf("%s\n", path);*/
-	*res = malloc(sizeof(char *) * 20);
+	res = malloc(sizeof(char *) * 20);
 	word = strtok(path, ":="); 
         while (word)
         {
@@ -62,6 +62,7 @@ char **findpath(void)
                 word = strtok(NULL, ":=");
                 j++;
         }
+	*len = j;
 	return (res);
 }
 
@@ -76,24 +77,23 @@ char **findpath(void)
 
 int main(int ac, char *av[])
 {
-	int i, j;
+	int i, j, pichu = 0;
 	char *paths[4] = {"/usr/bin", "/usr", "/bin", NULL};
 	struct stat st;
 	char p[1024];
-	char **test = malloc(sizeof(char **) * 20);
+	char **test;
 
 	if (ac < 2)
 		return (-1);
 	//paths[] = separate_paths();
-	*test = malloc(sizeof(char *) * 20);
-	test = findpath();
-	for (j = 1; j < (ac - 1); j++)
+	test = findpath(&pichu);
+	for (j = 0; j < (ac - 1); j++)
 	{
-		for (i = 0; test[i]; i++)
+		for (i = 1; i < pichu; i++)
 		{
 			strcpy(p, test[i]);
 			strcat(p, "/");
-			strcat(p, av[j]);
+			strcat(p, av[j + 1]);
 			if (stat(p, &st) == 0)
 			{
 				printf("%s\n", p);
