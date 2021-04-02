@@ -12,7 +12,7 @@
 
 int main(int ac, char *av[])
 {
-	int i;
+	int i, j;
 	char *paths[4] = {"/usr/bin", "/usr", "/bin", NULL};
 	struct stat st;
 	char p[1024];
@@ -20,15 +20,17 @@ int main(int ac, char *av[])
 	if (ac < 2)
 		return (-1);
 	//paths[] = separate_paths();
-	for (i = 0; paths[i]; i++)
+	for (j = 0; j < (ac - 1); j++)
 	{
-		strcpy(p, paths[i]);
-		strcat(p, "/");
-		strcat(p, av[1]);
-		if (stat(p, &st) == 0)
+		for (i = 0; paths[i]; i++)
 		{
-			printf("%s\n", p);
-			return (0);
+			strcpy(p, paths[i]);
+			strcat(p, "/");
+			strcat(p, av[j + 1]);
+			if (stat(p, &st) == 0)
+			{
+				printf("%s\n", p);
+			}
 		}
 	}
 	return (0);
