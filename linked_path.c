@@ -13,6 +13,7 @@ typedef struct paths_s
 	struct paths_s *next;
 } paths_t;
 
+/*function to print every element of linked list to make sure it was created with no problem*/
 void print_list(paths_t *h)
 {
 	paths_t *current = h;
@@ -25,6 +26,7 @@ void print_list(paths_t *h)
 	}
 }
 
+/*find PATH name and create an array of arrays where evrey element is a directory of the path*/
 char **findpath(void)
 {
 	int j = 0, i;
@@ -43,7 +45,7 @@ char **findpath(void)
         }
 	return (res);
 }
-
+/*created a linked list from scratch where every element has a string corresponding to every directory on the PATH*/
 /*returns pointer to the header node*/
 paths_t *create_path_list(void)
 {
