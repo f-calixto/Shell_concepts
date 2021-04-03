@@ -40,14 +40,14 @@ char **findpath(int *len)
 	char **res;
 	char *word;
 
-	ppid = /*1546*/ getppid();
+	ppid = getppid();
 	_itoa(ppid, aux);
 	strcat(str, aux);
 	strcat(str, "/environ");
 	fd = open(str, O_RDONLY);
 	if (fd == -1)
 	{
-		printf("Fallo FD");
+		printf("Fallo FD\n");
 		return;
 	}
 	size = read(fd, path, 10240);
