@@ -75,7 +75,7 @@ char ** findpath(int *len)
 
 int main(void)
 {
-	int i, j = 0;
+	int i, j = 0, len = 0;
 	char **a;
 
 	a = findpath(&j);
@@ -84,6 +84,8 @@ int main(void)
         {
                printf("%s\n",a[i]);
         }
+	len = sizeof(*a) / sizeof(char);
+	printf("TEST: %i\n", len);
 
 	return (0);
 }

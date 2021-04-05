@@ -6,10 +6,11 @@ char *_getenv(const char *name)
 {
 	int i = 0, j = 0;
 	extern char **environ;
+	char *word;
 
 	for (i = 0; environ[i] != '\0'; i++)
 	{
-			char *word = environ[i];
+			word = environ[i];
 			for (j = 0; name[j] != '\0'; j++)
 			{
 				if (name[j] != word[j])

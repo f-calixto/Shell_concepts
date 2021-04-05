@@ -7,16 +7,34 @@
 #include <stdlib.h>
 #include "_getenv.c"
 
-char **findpath(int *len)
+int count_dirs(char *path)
 {
-	int j = 0, i;
+	int count = 3, i = 0; /* Count es 3 por PATH , la primer carpeta, y nulo*/
+	for(i = 0 ; path[i] != '\0' ; i++)
+	{
+		if (path[i] == ':')
+			count++;
+	}
+	return (count);
+}
+
+
+char **findpath(void)
+{
+	int j = 0, i, size = 0;
 	char *path;
 	char **res;
 	char *word;
-	
+
 	path = _getenv("PATH");
 	/*printf("%s\n", path);*/
-	res = malloc(sizeof(char *) * 20);
+	size = count_dirs(path);
+	printf("%i\n",size);
+	res = malloc(sizeof(char *) * (size));
+	if (!res)
+	{
+		return;
+	}
 	word = strtok(path, ":="); 
         while (word)
         {
@@ -24,7 +42,8 @@ char **findpath(int *len)
                 word = strtok(NULL, ":=");
                 j++;
         }
-	*len = j;
+	res[j] = NULL;
+	
 	return (res);
 }
 
@@ -43,12 +62,12 @@ int main(void)
 	char **test;
 
 	//paths[] = separate_paths();
-	test = findpath(&pichu);
-	for (pichu = 1;test[pichu] != '\0';pichu++)
+	test = findpath();
+	for (pichu = 0;test[pichu] != '\0';pichu++)
 	{
 		printf("%s\n",test[pichu]);
-	}	
-
+	}
+	free(test);
 	return (0);
 }
 
