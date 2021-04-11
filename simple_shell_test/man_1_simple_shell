@@ -1,0 +1,54 @@
+.\"Man page for Kiko's and Diego's shell project.
+.TH man 3 "5 April 2021" "1.0" "simple shell man page"
+.SH NAME
+.B shell
+.SH SYNOPSIS
+.B #include "holberton.h"
+.PP
+int printf(const char *format, ...);
+.SH DESCRIPTION
+.B The _printf function produces output to stdout. This output is written according to a format string, in which there can be ordinary characters to be printed or conversion specifiers (introduced by the '%' char). The arguments to be printed must correspond correctly to the conversion specifier, otherwise the function returns error.
+.PP
+DO: _printf("1 + 1: %d", 2);
+.PP
+DON'T: _printf("My name is %d", name);
+.SH CONVERSION SPECIFIERS
+Providing that the character '%' is present in the format string, it should be followed by any of the next conversion specifiers: 
+.PP
+.RS
+.B % - Used in order to print a single '%' to the stdout.
+.PP
+.B s - Takes a char * argument and prints the array of characters pointed by.
+.PP
+.B c - Takes an int argument and converts to unsigned char, the resulting character is printed.
+.PP
+.B i, d - Prints a integer (takes either an integer or a decimal).
+.PP
+.B b - Prints a binary. Takes unsigned integer argument and converts to binary.
+.PP
+.B u - Prints unsigned integer argument.
+.PP
+.B o - Prints octal. Takes unsigned integer argument and converts to octal.
+.PP
+.B x - Prints hexadecimal lowercase. Takes unsigned integer argument and converts to lowercase hexadecimal.
+.PP
+.B X - Prints hexadecimal uppercase. Takes unsigned integer argument and converts to uppercase hexadecimal.
+.PP
+.B S - Prints the string normally, but, non printable characters (0 < ASCII value < 32 or >= 127)) are printed this way: \x, followed by the ASCII code value in hexadecimal (upper case - always 2 characters).
+.PP
+.B r - Takes the char * argument and prints the reversed string.
+.PP
+.B R - Takes the char * argument and prints the rot13'ed string, any non alphabetic character will remain untouched.
+.PP
+.SH RETURN VALUE
+On success, the _printf function returns the amount of characters printed to the stdout (excluding the terminating null byte).
+.PP
+If any output error is found, the function returns negative value (-1).
+.PP
+.SH SEE ALSO
+man
+.B 3 printf
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Toshi Borgia && Francisco Calixto
