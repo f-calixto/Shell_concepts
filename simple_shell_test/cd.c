@@ -1,5 +1,5 @@
 #include "holberton.h"
-void cd_builtin(char **argv)
+void cd_builtin(char **argv, char **env)
 {
 	char *dog;
 
@@ -8,7 +8,7 @@ void cd_builtin(char **argv)
                         printf("helo");
                         if (argv[1] == NULL)
                         {
-                                strtok(_getenv("HOME"), "=");
+                                strtok(_getenv("HOME", env), "=");
                                 dog = strtok(NULL, "=");
                                 printf("%s\n", dog);
                                 chdir(dog);
@@ -22,7 +22,7 @@ void cd_builtin(char **argv)
                         }
                         else if (argv[1][0] == '-')
                         {
-                                strtok(_getenv("OLDPWD"), "=");
+                                strtok(_getenv("OLDPWD", env), "=");
                                 dog = strtok(NULL, "=");
                                 chdir(dog);
                                 argv[0] = NULL;

@@ -73,14 +73,14 @@ char **parser(char *str)
  * Return: the array of strings, where each string is a dir in PATH
  */
 
-char **findpath(void)
+char **findpath(char **env)
 {
 	int j = 0, size = 0;
 	char *path;
 	char **res;
 	char *word;
 
-	path = _getenv("PATH");
+	path = _getenv("PATH", env);
 	size = count_dirs(path);
 	res = malloc(sizeof(char *) * (size));
 	if (!res)
@@ -104,14 +104,14 @@ char **findpath(void)
  * Return: line in the environment where name is found
  */
 
-char *_getenv(const char *name)
+char *_getenv(const char *name, char **env)
 {
 	int i = 0, j = 0;
 	char *word;
 
-	for (i = 0; environ[i] != '\0'; i++)
+	for (i = 0; env[i] != '\0'; i++)
 	{
-		word = environ[i];
+		word = env[i];
 		for (j = 0; name[j] != '\0'; j++)
 		{
 			if (name[j] != word[j])

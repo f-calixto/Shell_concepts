@@ -26,14 +26,14 @@ void free_grid(char **grid)
  *
  */
 
-char *_which(char *cmd)
+char *_which(char *cmd, char **env)
 {
 	int i = 0;
 	struct stat st;
 	static char buff[1024];
 	char **path = NULL;
 
-	path = findpath();
+	path = findpath(env);
 	for (i = 1; path[i]; i++)
 	{
 		if (cmd[0] == '.')
@@ -95,7 +95,7 @@ char **array_copy(char **arr, int extra)
         return (new_arr);
 }
 
-int _setenv(char *name, char *value, int overwrite, char **env)
+int _setenv(char *name, char *value, int overwrite, char **env, char ***envi)
 {
 	int i = 0, j = 0, size = 0;
 	char *new_val;
@@ -114,7 +114,7 @@ int _setenv(char *name, char *value, int overwrite, char **env)
 				if(overwrite != 0)
 				{
 					/*free(env[i]);*/
-					size = (_strlen(name) + 3 + _strlen(value));
+					size = (_strlen(name) + 2 + _strlen(value));
 					printf("%i\n", size);
 					new_val = malloc(sizeof(char) * size);
 					if(!new_val)
@@ -123,6 +123,8 @@ int _setenv(char *name, char *value, int overwrite, char **env)
 					strcat(new_val, "=");
 					strcat(new_val, value);
 					strcat(new_val , "\0");
+					free(env[i]);
+					env[i] = malloc(sizeof(char) * size);
 					strcpy(env[i], new_val);
 					free(new_val);
 					return 0;
@@ -133,12 +135,12 @@ int _setenv(char *name, char *value, int overwrite, char **env)
 	}
 	if (env[i] == '\0')
 	{
-		size = (_strlen(name) + 3 + _strlen(value));
+		size = (_strlen(name) + 2 + _strlen(value));
                 new_val = malloc(sizeof(char) * size);
                 if(!new_val)
 			return (-1);
 		new_env = array_copy(env, 1);
-		new_env[i] = malloc(sizeof(char *));
+		new_env[i] = malloc(sizeof(char) * size);
 		strcpy(new_val, name);
 		strcat(new_val, "=");
 		strcat(new_val, value);
@@ -146,10 +148,9 @@ int _setenv(char *name, char *value, int overwrite, char **env)
 		strcpy(new_env[i] , new_val);
 		new_env[i + 1] = NULL;
 		free_grid(env);
-		env = array_copy(new_env, 0);
+		*envi = new_env;
 		/*for (j = 0; new_env[j] != '\0' ; j++)
 			printf("%s\n", new_env[j]);*/
-		free_grid(new_env);
 		free(new_val);
 	}
 	return 0;

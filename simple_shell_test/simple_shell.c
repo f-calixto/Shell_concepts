@@ -8,7 +8,7 @@ void sig_handler(int signum);
  * Return: 0
  */
 
-int exit_hsh(ssize_t eof, char **argv, int flag, char *line, char **env)
+int exit_hsh(ssize_t eof, char **argv, int flag, char *line, char **env, char ***envi)
 {
 	int i;
 
@@ -36,7 +36,8 @@ int exit_hsh(ssize_t eof, char **argv, int flag, char *line, char **env)
 		{
 			printf("Entro en env\n");
 			for (i = 0; env[i] != '\0' ; i++)
-				_puts(env[i]);
+				/*_puts(*env[i]);*/
+				printf("%s\n", env[i]);
 			write(1,"salio\n",6);
 			strcpy(argv[0], "ls");
 		}
@@ -50,11 +51,11 @@ int exit_hsh(ssize_t eof, char **argv, int flag, char *line, char **env)
 		/*cd_builtin(argv);*/
 		if ((_strcmp(argv[0], "setenv") == 0) && argv[1] != NULL && argv[2] != NULL)
 		{
-			_setenv(argv[1] , argv[2] , 1 , env);
+			_setenv(argv[1] , argv[2] , 1, env, envi);
 			/*argv[0] = NULL;*/
 			strcpy(argv[0], "ls");
 		}
-		cd_builtin(argv);
+		cd_builtin(argv, env);
 		/*if (_strcmp(argv[0], "cd") == 0)
 		{
 			printf("helo");
@@ -137,11 +138,11 @@ int main(void)
 	ssize_t eof = 0;
 	char **args = NULL;
 	char *line = NULL;
+	char **my_envi;
 	char *mm;
-	char **my_environ;
 	/*int r;*/
 
-	my_environ = array_copy(environ,0);
+	my_envi = array_copy(environ, 0);
 	/*for (m = 0 ; my_environ[m] != '\0' ; m++)
 		printf("%s\n", my_environ[m]);*/
 	while (1 == 1)
@@ -152,7 +153,7 @@ int main(void)
 		eof = getline(&line, &len, stdin);
 		free(args);
 		args = parser(line);
-		if ((exit_hsh(eof, args, f, line, my_environ)) == 0)
+		if ((exit_hsh(eof, args, f, line, my_envi, &my_envi)) == 0)
 		{
 			fflush(STDIN_FILENO);
 			break;
@@ -160,14 +161,14 @@ int main(void)
 		child = fork();
 		if (child == -1)
 		{
-			free_everything(line, args, my_environ);
+			free_everything(line, args, my_envi);
 			return (1);
 		}
 		if (child == 0)
 		{
 			if (args[0])
 			{
-				mm = _which(args[0]);
+				mm = _which(args[0], my_envi);
 				printf("mm=%s\n", mm);
 				/*for (r = 0 ; args[r] ; r++)
 					printf("arg[%i]=%s\n",r,args[r]);*/
@@ -180,7 +181,7 @@ int main(void)
 			wait(&status);
 		fflush(STDIN_FILENO);
 	}
-	free_everything(line, args, my_environ);
+	free_everything(line, args, my_envi);
 	return (0);
 }
 
