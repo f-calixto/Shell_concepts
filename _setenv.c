@@ -7,7 +7,7 @@ int _setenv(const char *name, const char *value, int overwrite)
 {
 	int i = 0, j = 0;
 	extern char **environ;
-	char *new_val;
+	char new_val[100];
 
 	for (i = 0; environ[i] != '\0'; i++)
 	{
@@ -21,13 +21,14 @@ int _setenv(const char *name, const char *value, int overwrite)
 			{
 				if(overwrite != 0)
 				{
-					new_val = malloc(sizeof(char *));
+					/*new_val = malloc(sizeof(char) * 1024);*/
 					if(!new_val)
 						return (-1);
-					strcat(new_val, name);
+					strcpy(new_val, name);
 					strcat(new_val, "=");
 					strcat(new_val, value);
 					environ[i] = new_val;
+					/*free(new_val);*/
 					return 0;
 				}
 				else
@@ -36,31 +37,32 @@ int _setenv(const char *name, const char *value, int overwrite)
 	}
 	if (environ[i] == '\0')
 	{
-		new_val = malloc(sizeof(char *));
+		/*new_val = malloc(sizeof(char) * 1024);*/
                 if(!new_val)
 			return (-1);
-		strcat(new_val, name);
+		strcpy(new_val, name);
 		strcat(new_val, "=");
 		strcat(new_val, value);
 		environ[i] = new_val;
 		environ[i + 1] = '\0';
+		/*free(new_val);*/
 	}
 	return 0;
 }
 
-int main(int ac, char **argv)
+int main(void)
 {
 	char *r;
-	if (ac != 4)
-		return (1);
-	r = _getenv(argv[1]);
+	char *argv[] = {"TEST", "hola", "0"};
+	/*r = _getenv(argv[0]);
 	if(!r)
 		printf("No se encontro pa\n");
 	else
 		printf("%s\n", r);
-
-	 _setenv(argv[1], argv[2], atoi(argv[3]));
-	r = _getenv(argv[1]);
+	printf("antes");*/
+	 _setenv(argv[0], argv[1], atoi(argv[2]));
+	printf("despues");
+	r = _getenv("TEST");
         if(!r)
                 printf("No se encontro pa\n");
         else

@@ -27,8 +27,11 @@ char *_strcpy(char *dest, char *src);
 void _puts(char *str);
 char *_strncpy(char *dest, char *src, int n);
 char *special_char_finder(char *str, char *ch);
-void free_everything(char *line, char **argv);
+void free_everything(char *line, char **argv, char ** env);
 int _atoi(char *s);
 void cd_builtin(char **argv);
+void free_grid(char **grid);
+char **array_copy(char **arr, int extra);
+int _setenv(char *name, char *value, int overwrite, char **env);
 
 #endif

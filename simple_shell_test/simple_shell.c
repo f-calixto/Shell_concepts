@@ -8,7 +8,7 @@ void sig_handler(int signum);
  * Return: 0
  */
 
-int exit_hsh(ssize_t eof, char **argv, int flag, char *line)
+int exit_hsh(ssize_t eof, char **argv, int flag, char *line, char **env)
 {
 	int i;
 
@@ -25,7 +25,7 @@ int exit_hsh(ssize_t eof, char **argv, int flag, char *line)
 			if(argv[1])
 			{
 				i = _atoi(argv[1]);
-				free_everything(line, argv);
+				free_everything(line, argv, env);
 				exit(i);
 			}
 			else
@@ -35,10 +35,10 @@ int exit_hsh(ssize_t eof, char **argv, int flag, char *line)
 		if ((_strcmp(argv[0], "env") == 0) && argv[1] == NULL)
 		{
 			printf("Entro en env\n");
-			for (i = 0; environ[i] != '\0' ; i++)
-				_puts(environ[i]);
+			for (i = 0; env[i] != '\0' ; i++)
+				_puts(env[i]);
 			write(1,"salio\n",6);
-			/*argv[0] = NULL;*/
+			strcpy(argv[0], "ls");
 		}
 		if ((_strcmp(argv[0], "env") == 0) && argv[1] != NULL)
 		{
@@ -46,6 +46,13 @@ int exit_hsh(ssize_t eof, char **argv, int flag, char *line)
 				_strcpy(argv[i - 1], argv[i]);
 			printf("i=%i\n", i);
 			argv[i - 1] = NULL;
+		}
+		/*cd_builtin(argv);*/
+		if ((_strcmp(argv[0], "setenv") == 0) && argv[1] != NULL && argv[2] != NULL)
+		{
+			_setenv(argv[1] , argv[2] , 1 , env);
+			/*argv[0] = NULL;*/
+			strcpy(argv[0], "ls");
 		}
 		cd_builtin(argv);
 		/*if (_strcmp(argv[0], "cd") == 0)
@@ -91,8 +98,9 @@ int exit_hsh(ssize_t eof, char **argv, int flag, char *line)
  * Return: void
  */
 
-void free_everything(char *line, char **argv)
+void free_everything(char *line, char **argv, char **env)
 {
+	free_grid(env);
 	free(line);
 	line = NULL;
 	free(argv);
@@ -130,8 +138,12 @@ int main(void)
 	char **args = NULL;
 	char *line = NULL;
 	char *mm;
+	char **my_environ;
 	/*int r;*/
 
+	my_environ = array_copy(environ,0);
+	/*for (m = 0 ; my_environ[m] != '\0' ; m++)
+		printf("%s\n", my_environ[m]);*/
 	while (1 == 1)
 	{
 		printf("pid:%i\n",getpid());
@@ -140,7 +152,7 @@ int main(void)
 		eof = getline(&line, &len, stdin);
 		free(args);
 		args = parser(line);
-		if ((exit_hsh(eof, args, f, line)) == 0)
+		if ((exit_hsh(eof, args, f, line, my_environ)) == 0)
 		{
 			fflush(STDIN_FILENO);
 			break;
@@ -148,7 +160,7 @@ int main(void)
 		child = fork();
 		if (child == -1)
 		{
-			free_everything(line, args);
+			free_everything(line, args, my_environ);
 			return (1);
 		}
 		if (child == 0)
@@ -159,7 +171,7 @@ int main(void)
 				printf("mm=%s\n", mm);
 				/*for (r = 0 ; args[r] ; r++)
 					printf("arg[%i]=%s\n",r,args[r]);*/
-				if (execve(mm, args, environ) == -1)
+				if (execve(mm, args, NULL) == -1)
 					perror("./hsh");
 			}
 			break;
@@ -168,7 +180,7 @@ int main(void)
 			wait(&status);
 		fflush(STDIN_FILENO);
 	}
-	free_everything(line, args);
+	free_everything(line, args, my_environ);
 	return (0);
 }
 
